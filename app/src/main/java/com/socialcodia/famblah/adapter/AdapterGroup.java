@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,27 +28,30 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.view_chat_list,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.view_group,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String name = modelGroupList.get(position).getName();
-        holder.tvUserName.setText(name);
+
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return modelGroupList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView tvUserName;
+        private TextView tvGroupName,tvLastMessageSenderName,tvLastMessage;
+        private ImageView groupImageIcon;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvUserName = itemView.findViewById(R.id.tvUserName);
+            tvGroupName = itemView.findViewById(R.id.tvGroupName);
+            tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
+            tvLastMessageSenderName = itemView.findViewById(R.id.tvLastMessageSenderName);
+            groupImageIcon = itemView.findViewById(R.id.groupImageIcon);
         }
     }
 }
