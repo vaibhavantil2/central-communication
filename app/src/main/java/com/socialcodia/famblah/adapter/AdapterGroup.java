@@ -1,6 +1,7 @@
 package com.socialcodia.famblah.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.socialcodia.famblah.R;
+import com.socialcodia.famblah.activity.GroupChatActivity;
 import com.socialcodia.famblah.model.ModelGroup;
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +41,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String groupName = modelGroupList.get(position).getName();
         String groupImage = modelGroupList.get(position).getImage();
+        final String gid = modelGroupList.get(position).getGroup_id();
 
         holder.tvGroupName.setText(groupName);
         try {
@@ -53,9 +56,16 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         holder.groupLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Hello Group", Toast.LENGTH_SHORT).show();
+                sendToGroupChat(gid);
             }
         });
+    }
+
+    private void sendToGroupChat(String gid)
+    {
+        Intent intent= new Intent(context, GroupChatActivity.class);
+        intent.putExtra("gid",gid);
+        context.startActivity(intent);
     }
 
     @Override
