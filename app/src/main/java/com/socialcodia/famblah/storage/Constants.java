@@ -31,7 +31,13 @@ public class Constants {
     GROUP_PARTICIPANT_NAME = "p_name",
     GROUP_PARTICIPANT_ID = "p_id",
     GROUP_PARTICIPANT_ROLE = "p_role",
-    GROUP_PARTICIPANT_JOINING_TIME = "p_joining_time"
+    GROUP_PARTICIPANT_JOINING_TIME = "p_joining_time",
+    CHATLIST = "ChatList",
+    CHATS = "Chats",
+    GROUPS_MEMBER = "Groups_Member",
+    GROUPS = "Groups",
+    STATUS = "Status",
+    USERS = "Users"
 
 
 
