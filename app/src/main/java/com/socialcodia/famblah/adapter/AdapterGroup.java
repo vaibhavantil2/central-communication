@@ -49,7 +49,6 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         }
         catch (Exception e)
         {
-            Toast.makeText(context, "Oops! Something went wrong to load the group image"+e.getMessage(), Toast.LENGTH_LONG).show();
             Picasso.get().load(R.drawable.person_female).into(holder.groupImageIcon);
         }
 

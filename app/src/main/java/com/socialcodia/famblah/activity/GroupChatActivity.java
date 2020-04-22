@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -70,28 +72,27 @@ public class GroupChatActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
 
         //Get Data from intent
         intent = getIntent();
         groupId = intent.getStringExtra("gid");
 
         //Get Group Details
-        getGroupsDetails(groupId);
+        getGroupsDetails();
     }
 
-    private void getGroupsDetails(String groupId)
+    private void getGroupsDetails()
     {
-        mRef.child(Constants.GROUPS).child(groupId);
-        mRef.addValueEventListener(new ValueEventListener() {
+        mRef.child(Constants.GROUPS);
+        Query query = mRef.orderByChild(Constants.GROUP_ID).equalTo(groupId);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    ModelGroup modelGroup = ds.getValue(ModelGroup.class);
-                    String name = modelGroup.getName();
-                    String image = modelGroup.getImage();
+                    String name = ds.child(Constants.GROUP_NAME).getValue(String.class);
+                    Toast.makeText(GroupChatActivity.this, "Group Name Is" +name, Toast.LENGTH_SHORT).show();
+                    String image = ds.child(Constants.GROUP_IMAGE).getValue(String.class);
                     tvGroupName.setText(name);
                     try {
                         Picasso.get().load(image).into(groupImageIcon);
