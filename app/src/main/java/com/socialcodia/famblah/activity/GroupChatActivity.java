@@ -1,12 +1,15 @@
 package com.socialcodia.famblah.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,16 +30,23 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.socialcodia.famblah.R;
+import com.socialcodia.famblah.adapter.AdapterGroupChat;
 import com.socialcodia.famblah.model.ModelGroup;
+import com.socialcodia.famblah.model.ModelGroupChat;
 import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GroupChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    List<ModelGroupChat> modelGroupChatList;
+    Uri filePath;
 
     private TextView tvGroupName, tvGroupStatus;
     private EditText inputGroupMessage;
@@ -44,7 +57,6 @@ public class GroupChatActivity extends AppCompatActivity {
     String groupId,userId;
 
     //Firebase
-
     FirebaseAuth mAuth;
     FirebaseDatabase mDatabase;
     DatabaseReference mRef;
@@ -87,13 +99,108 @@ public class GroupChatActivity extends AppCompatActivity {
             userId = mUser.getUid();
         }
 
+        //LinearLayoutManager for recycler view
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        modelGroupChatList = new ArrayList<>();
+
         //Get Group Details
         getGroupsDetails();
+
+        //Get Group Messages
+
+        getChats();
+
+        ivAttachGroupFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
 
         ivSendGroupMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ValidateMessage();
+            }
+        });
+    }
+
+    private void chooseImage()
+    {
+        Intent intent = new Intent();
+        intent.setAction(intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent,100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode==RESULT_OK && data!=null)
+        {
+            filePath = data.getData();
+            uploadImage(filePath);
+        }
+    }
+
+    private void uploadImage(Uri filePath)
+    {
+        Toast.makeText(this, "Sending Image..", Toast.LENGTH_SHORT).show();
+        String pathAndImageName = "Group/Chat/famblah_"+System.currentTimeMillis();
+        mStorageRef.child(pathAndImageName).putFile(filePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageDownloadUrl = uri.toString();
+                            sendImageMessage(imageDownloadUrl);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void sendImageMessage(String imageDownloadUrl)
+    {
+        DatabaseReference mChatRef = FirebaseDatabase.getInstance().getReference(Constants.GROUPS).child(groupId).child(Constants.CHATS);
+        String messageId = mChatRef.push().getKey();
+        HashMap<String,Object> map = new HashMap<>();
+        map.put(Constants.CHAT_SENDER_ID,userId);
+        map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
+        map.put(Constants.CHAT_TYPE,"image");
+        map.put(Constants.CHAT_IMAGE,imageDownloadUrl);
+        map.put(Constants.CHAT_STATUS,1);
+        map.put(Constants.CHAT_MESSAGE_ID,messageId);
+        mChatRef.child(messageId).setValue(map);
+    }
+
+    private void getChats()
+    {
+        mRef.child(Constants.GROUPS).child(groupId).child(Constants.CHATS)
+        .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                modelGroupChatList.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    ModelGroupChat modelGroupChat = ds.getValue(ModelGroupChat.class);
+                    modelGroupChatList.add(modelGroupChat);
+                }
+                AdapterGroupChat adapterGroupChat = new AdapterGroupChat(modelGroupChatList,getApplicationContext());
+                recyclerView.setAdapter(adapterGroupChat);
+                adapterGroupChat.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -119,13 +226,14 @@ public class GroupChatActivity extends AppCompatActivity {
 
         String messageId = mChatRef.push().getKey();
         HashMap<String,Object> map = new HashMap<>();
-        map.put(Constants.GROUP_PARTICIPANT_ID,userId);
+        map.put(Constants.CHAT_SENDER_ID,userId);
         map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
         map.put(Constants.CHAT_TYPE,"text");
         map.put(Constants.CHAT_MESSAGE,message);
         map.put(Constants.CHAT_STATUS,1);
         map.put(Constants.CHAT_MESSAGE_ID,messageId);
         mChatRef.child(messageId).setValue(map);
+        inputGroupMessage.setText("");
     }
 
     private void getGroupsDetails()

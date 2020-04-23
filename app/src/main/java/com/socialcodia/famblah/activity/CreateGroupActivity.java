@@ -225,9 +225,9 @@ public class CreateGroupActivity extends AppCompatActivity {
     private void AddParticipant(final String groupId)
     {
         HashMap<String,Object> map = new HashMap<>();
-        map.put(Constants.GROUP_PARTICIPANT_ID,userId);
-        map.put(Constants.GROUP_PARTICIPANT_ROLE,"Admin");
-        map.put(Constants.GROUP_PARTICIPANT_JOINING_TIME,String.valueOf(System.currentTimeMillis()));
+        map.put(Constants.GROUP_MEMBER_ID,userId);
+        map.put(Constants.GROUP_MEMBER_ROLE,"Admin");
+        map.put(Constants.GROUP_MEMBER_JOINING_TIME,String.valueOf(System.currentTimeMillis()));
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.GROUPS).child(groupId).child(Constants.MEMBERS)
                 .child(userId);
         mRef.setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
