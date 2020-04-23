@@ -86,8 +86,6 @@ public class CreateGroupActivity extends AppCompatActivity {
                 chooseImage();
             }
         });
-
-
     }
 
     private void validateData()
@@ -179,7 +177,6 @@ public class CreateGroupActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     private void uploadGroupImage(final String groupName, final String groupDescription)
     {
