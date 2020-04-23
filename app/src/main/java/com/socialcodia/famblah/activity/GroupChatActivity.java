@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,8 @@ import com.socialcodia.famblah.model.ModelGroup;
 import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 public class GroupChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -37,7 +41,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private ActionBar actionBar;
     Intent intent;
-    String groupId;
+    String groupId,userId;
 
     //Firebase
 
@@ -46,6 +50,7 @@ public class GroupChatActivity extends AppCompatActivity {
     DatabaseReference mRef;
     FirebaseStorage mStorage;
     StorageReference mStorageRef;
+    FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,7 @@ public class GroupChatActivity extends AppCompatActivity {
         mRef = mDatabase.getReference();
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
-
+        mUser = mAuth.getCurrentUser();
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
 
@@ -77,30 +82,69 @@ public class GroupChatActivity extends AppCompatActivity {
         intent = getIntent();
         groupId = intent.getStringExtra("gid");
 
+        if (mUser!=null)
+        {
+            userId = mUser.getUid();
+        }
+
         //Get Group Details
         getGroupsDetails();
+
+        ivSendGroupMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ValidateMessage();
+            }
+        });
+    }
+
+    private void ValidateMessage()
+    {
+        String message = inputGroupMessage.getText().toString().trim();
+        if (message.isEmpty())
+        {
+            Toast.makeText(this, "Can't sent empty message", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            SendMessage(message);
+        }
+    }
+
+    private void SendMessage(String message)
+    {
+        mRef.child(Constants.GROUPS).child(groupId).child(Constants.CHATS);
+
+        DatabaseReference mChatRef = FirebaseDatabase.getInstance().getReference(Constants.GROUPS).child(groupId).child(Constants.CHATS);
+
+        String messageId = mChatRef.push().getKey();
+        HashMap<String,Object> map = new HashMap<>();
+        map.put(Constants.GROUP_PARTICIPANT_ID,userId);
+        map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
+        map.put(Constants.CHAT_TYPE,"text");
+        map.put(Constants.CHAT_MESSAGE,message);
+        map.put(Constants.CHAT_STATUS,1);
+        map.put(Constants.CHAT_MESSAGE_ID,messageId);
+        mChatRef.child(messageId).setValue(map);
     }
 
     private void getGroupsDetails()
     {
-        mRef.child(Constants.GROUPS);
-        Query query = mRef.orderByChild(Constants.GROUP_ID).equalTo(groupId);
-        query.addValueEventListener(new ValueEventListener() {
+        mRef.child(Constants.GROUPS).child(groupId)
+        .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
+                String groupName = dataSnapshot.child(Constants.GROUP_NAME).getValue(String.class);
+                String groupImage = dataSnapshot.child(Constants.GROUP_IMAGE).getValue(String.class);
+
+                //Set value
+                tvGroupName.setText(groupName);
+                try {
+                    Picasso.get().load(groupImage).into(groupImageIcon);
+                }
+                catch (Exception e)
                 {
-                    String name = ds.child(Constants.GROUP_NAME).getValue(String.class);
-                    Toast.makeText(GroupChatActivity.this, "Group Name Is" +name, Toast.LENGTH_SHORT).show();
-                    String image = ds.child(Constants.GROUP_IMAGE).getValue(String.class);
-                    tvGroupName.setText(name);
-                    try {
-                        Picasso.get().load(image).into(groupImageIcon);
-                    }
-                    catch (Exception e)
-                    {
-                        Picasso.get().load(image).into(groupImageIcon);
-                    }
+                    Picasso.get().load(R.drawable.person_female).into(groupImageIcon);
                 }
             }
 

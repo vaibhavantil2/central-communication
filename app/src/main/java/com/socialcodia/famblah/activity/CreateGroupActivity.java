@@ -138,7 +138,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         map.put(Constants.GROUP_ID,groupId);
         map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
         map.put(Constants.GROUP_CREATOR,userId);
-        mRef.child("Groups").push().setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mRef.child(Constants.GROUPS).child(groupId).setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 AddParticipant(groupId);
@@ -213,7 +213,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         map.put(Constants.GROUP_ID,groupId);
         map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
         map.put(Constants.GROUP_CREATOR,userId);
-        mRef.child("Groups").push().setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        mRef.child(Constants.GROUPS).child(groupId).setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 AddParticipant(groupId);
@@ -226,14 +226,14 @@ public class CreateGroupActivity extends AppCompatActivity {
     {
         HashMap<String,Object> map = new HashMap<>();
         map.put(Constants.GROUP_PARTICIPANT_ID,userId);
-        map.put(Constants.GROUP_PARTICIPANT_ROLE,"creator");
+        map.put(Constants.GROUP_PARTICIPANT_ROLE,"Admin");
         map.put(Constants.GROUP_PARTICIPANT_JOINING_TIME,String.valueOf(System.currentTimeMillis()));
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Group_Participant").child(groupId)
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.GROUPS).child(groupId).child(Constants.MEMBERS)
                 .child(userId);
         mRef.setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override public void onSuccess(Void aVoid) {
                 sendToHome();
-                Toast.makeText(CreateGroupActivity.this, "Group create ho gya hai", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateGroupActivity.this, "The group has been created.", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
