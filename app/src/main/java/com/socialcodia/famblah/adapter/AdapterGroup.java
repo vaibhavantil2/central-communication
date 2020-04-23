@@ -13,9 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.socialcodia.famblah.R;
 import com.socialcodia.famblah.activity.GroupChatActivity;
 import com.socialcodia.famblah.model.ModelGroup;
+import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,9 +47,12 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String groupName = modelGroupList.get(position).getName();
-        String groupImage = modelGroupList.get(position).getImage();
-        final String gid = modelGroupList.get(position).getGroup_id();
+
+        ModelGroup model = modelGroupList.get(position);
+
+        String groupName = model.getName();
+        String groupImage = model.getImage();
+        final String gid = model.getGroup_id();
 
         holder.tvGroupName.setText(groupName);
         try {
@@ -52,10 +63,55 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             Picasso.get().load(R.drawable.person_female).into(holder.groupImageIcon);
         }
 
+        getLastMessage(model,holder);
+
         holder.groupLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendToGroupChat(gid);
+            }
+        });
+    }
+
+    private void getLastMessage(ModelGroup model, final ViewHolder holder)
+    {
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.GROUPS).child(model.getGroup_id()).child(Constants.CHATS);
+        mRef.limitToLast(1).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    String message = ds.child(Constants.CHAT_MESSAGE).getValue(String.class);
+                    String timestamp = ds.child(Constants.TIMESTAMP).getValue(String.class);
+                    String sender = ds.child(Constants.CHAT_SENDER_ID).getValue(String.class);
+
+                    holder.tvLastMessage.setText(message);
+
+                    //Get Sender Information
+
+                    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.USERS);
+                    Query query = mRef.orderByChild(Constants.USER_ID).equalTo(sender);
+                            query.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren())
+                                    {
+                                        String name = ds.child(Constants.USER_NAME).getValue(String.class);
+                                        holder.tvLastMessageSenderName.setText(name+" ");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

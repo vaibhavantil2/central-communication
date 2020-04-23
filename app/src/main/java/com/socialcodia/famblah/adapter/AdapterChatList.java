@@ -7,19 +7,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.socialcodia.famblah.R;
 import com.socialcodia.famblah.activity.ChatActivity;
+import com.socialcodia.famblah.model.ModelChat;
+import com.socialcodia.famblah.model.ModelChatList;
 import com.socialcodia.famblah.model.ModelGroup;
 import com.socialcodia.famblah.model.ModelUser;
+import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,6 +39,11 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
 
     Context context;
     List<ModelUser> modelUserList;
+    List<ModelChat> modelChats;
+
+    public AdapterChatList(List<ModelChat> modelChats) {
+        this.modelChats = modelChats;
+    }
 
     public AdapterChatList(Context context, List<ModelUser> modelUserList) {
         this.context = context;
@@ -42,11 +59,11 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String name = modelUserList.get(position).getName();
-        String bio = modelUserList.get(position).getBio();
-        String image = modelUserList.get(position).getImage();
-        final String userId = modelUserList.get(position).getUid();
-
+        ModelUser model = modelUserList.get(position);
+        String name = model.getName();
+        String bio = model.getBio();
+        String image = model.getImage();
+        final String userId = model.getUid();
 
         holder.tvUserName.setText(name);
         holder.tvUserBio.setText(bio);
@@ -57,6 +74,9 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
         {
             Picasso.get().load(R.drawable.person_female);
         }
+
+        getLastMessage(model,holder);
+
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +84,34 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
             }
         });
 
+    }
+
+    private void getLastMessage(final ModelUser model, final ViewHolder holder)
+    {
+        modelChats = new ArrayList<>();
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.CHATS);
+        mRef.limitToLast(1).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    ModelChat modelChat = ds.getValue(ModelChat.class);
+                    if (modelChat.getSender().equals(FirebaseAuth.getInstance().getUid()) && modelChat.getReceiver().equals(model.getUid())
+                        ||
+                        modelChat.getSender().equals(model.getUid()) && modelChat.getReceiver().equals(FirebaseAuth.getInstance().getUid())
+                    )
+                    {
+                        String message = modelChat.getMessage();
+                        holder.tvUserBio.setText(message);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void sendToChat(String userId)

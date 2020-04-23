@@ -56,7 +56,6 @@ public class GroupsFragment extends Fragment {
 
 
         getGroups();
-
         return  famblah;
     }
 
