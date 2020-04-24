@@ -1,5 +1,6 @@
 package com.socialcodia.famblah.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.socialcodia.famblah.R;
+import com.socialcodia.famblah.activity.CreateGroupActivity;
 import com.socialcodia.famblah.adapter.AdapterGroup;
 import com.socialcodia.famblah.model.ModelGroup;
 
@@ -27,6 +30,7 @@ public class GroupsFragment extends Fragment {
 
     RecyclerView groupsRecyclerView;
     List<ModelGroup> modelGroupList;
+    FloatingActionButton fabCreateGroup;
 
     //Firebase
 
@@ -46,17 +50,29 @@ public class GroupsFragment extends Fragment {
         mRef = mDatabase.getReference();
 
         //ui init
-
         groupsRecyclerView = famblah.findViewById(R.id.groupsRecyclerView);
+        fabCreateGroup = famblah.findViewById(R.id.fabCreateGroup);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         groupsRecyclerView.setLayoutManager(layoutManager);
 
         modelGroupList = new ArrayList<>();
 
+        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendToCreateGroup();
+            }
+        });
 
         getGroups();
         return  famblah;
+    }
+
+    private void sendToCreateGroup()
+    {
+        Intent intent = new Intent(getContext(), CreateGroupActivity.class);
+        startActivity(intent);
     }
 
     private void getGroups()
