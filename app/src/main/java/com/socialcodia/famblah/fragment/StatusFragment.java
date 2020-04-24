@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +43,7 @@ import java.util.List;
  */
 public class StatusFragment extends Fragment {
 
+    FloatingActionButton fabAddStatus;
     private ConstraintLayout addStatusConstraintLayout;
     Uri filePath;
 
@@ -63,8 +65,8 @@ public class StatusFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_status, container, false);
 
+        fabAddStatus = view.findViewById(R.id.fabAddStatus);
         addStatusConstraintLayout = view.findViewById(R.id.AddStatusConstraintsLayout);
-
         addStatusConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,8 +108,14 @@ public class StatusFragment extends Fragment {
             hiss = user.getUid();
         }
 
-        getStatus();
+        fabAddStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+            }
+        });
 
+        getStatus();
         getUserInfo();
 
         return view;

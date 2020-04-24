@@ -19,8 +19,7 @@
         android:id="@+id/fabCreateGroup"
         android:src="@drawable/ic_creategroup_white"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_margin="16dp"
         android:tint="#ffed18"
         android:backgroundTint="#000000"/>
 
