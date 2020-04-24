@@ -114,9 +114,6 @@ public class ChatsFragment extends Fragment {
             case R.id.miLogout:
                 doLogout();
                 break;
-            case R.id.miCreateGroup:
-                sendToCreateGroup();
-                break;
         }
 
         return super.onOptionsItemSelected(item);

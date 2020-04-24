@@ -159,6 +159,7 @@ public class SecondStepUpdateProfile extends AppCompatActivity {
                 if (task.isSuccessful())
                 {
                     Toast.makeText(SecondStepUpdateProfile.this, "Profile Updated With Image", Toast.LENGTH_SHORT).show();
+                    sendToHome();
                 }
             }
         });
@@ -176,6 +177,7 @@ public class SecondStepUpdateProfile extends AppCompatActivity {
                 if (task.isSuccessful())
                 {
                     Toast.makeText(SecondStepUpdateProfile.this, "Profile updated without image", Toast.LENGTH_SHORT).show();
+                    sendToHome();
                 }
             }
         });

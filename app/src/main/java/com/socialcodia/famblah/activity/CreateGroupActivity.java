@@ -2,6 +2,7 @@ package com.socialcodia.famblah.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -32,6 +33,8 @@ import com.socialcodia.famblah.storage.Constants;
 import java.util.HashMap;
 
 public class CreateGroupActivity extends AppCompatActivity {
+
+    ActionBar actionBar;
 
     private EditText inputGroupName, inputGroupDescription;
     private ImageView groupImageIcon;
@@ -72,6 +75,11 @@ public class CreateGroupActivity extends AppCompatActivity {
         {
             userId = mUser.getUid();
         }
+
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Create Group");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
 
         btnCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +132,11 @@ public class CreateGroupActivity extends AppCompatActivity {
         }
    }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
+    }
 
     private void CreateGroupWithoutIcon(String groupName, String groupDescription)
     {

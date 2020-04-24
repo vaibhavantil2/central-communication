@@ -10,17 +10,17 @@
         android:id="@+id/groupImageIcon"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/person_male"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/group_image"
         app:civ_border_color="@color/colorPrimaryDark"
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="70dp"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/inputGroupName"
-        android:text="Hard Code Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Group Name"

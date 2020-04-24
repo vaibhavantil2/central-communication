@@ -238,7 +238,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
                         updateProfile(firebaseUser);
                         btnGenerateOtp.setEnabled(true);
                         btnVerifyOtp.setEnabled(true);
-//                        checkLoginState();
+                        checkLoginState(firebaseUser);
                         Toast.makeText(PhoneLoginActivity.this, "SignIn Successful", Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -275,6 +275,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
                     if (dataSnapshot.exists())
                     {
                         int loginState = dataSnapshot.child(Constants.LOGIN_STATE).getValue(int.class);
+                        Toast.makeText(PhoneLoginActivity.this, "The current login state is "+loginState, Toast.LENGTH_SHORT).show();
                         if (loginState==0)
                         {
                             sendToSecondStepUpdateProfileActivity();
