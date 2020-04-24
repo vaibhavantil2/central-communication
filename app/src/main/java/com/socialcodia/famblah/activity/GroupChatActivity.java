@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,6 +44,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.Inflater;
 
 public class GroupChatActivity extends AppCompatActivity {
 
@@ -90,6 +94,9 @@ public class GroupChatActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
 
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setDisplayShowHomeEnabled(true);
+
         //Get Data from intent
         intent = getIntent();
         groupId = intent.getStringExtra("gid");
@@ -125,6 +132,12 @@ public class GroupChatActivity extends AppCompatActivity {
                 ValidateMessage();
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 
     private void chooseImage()
@@ -234,6 +247,53 @@ public class GroupChatActivity extends AppCompatActivity {
         map.put(Constants.CHAT_MESSAGE_ID,messageId);
         mChatRef.child(messageId).setValue(map);
         inputGroupMessage.setText("");
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.group_chat_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.group_chat_menu,menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem menuItem)
+    {
+        int id = menuItem.getItemId();
+        switch (id)
+        {
+            case R.id.miLogout:
+                mAuth.signOut();
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                break;
+        }
+
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        int id =item.getItemId();
+//        switch (id)
+//        {
+//            case R.id.miGroupInfo:
+//                sendToGroupInfo();
+//                break;
+//            default:
+//                Toast.makeText(this, "Oops! Something went wrong. you can report it to famblah", Toast.LENGTH_SHORT).show();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    private void sendToGroupInfo()
+    {
+        Intent intent= new Intent(getApplicationContext(),GroupInfoActivity.class);
+        intent.putExtra("groupId",groupId);
+        startActivity(intent);
     }
 
     private void getGroupsDetails()

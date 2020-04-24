@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
     Toolbar toolbar;
     ActionBar actionBar;
     RecyclerView chatRecyclerView;
+    ConstraintLayout chatConstraintLayout;
 
     //Firebase
     FirebaseAuth mAuth;
@@ -83,6 +85,7 @@ public class ChatActivity extends AppCompatActivity {
         userProfileImage = findViewById(R.id.userProfileImage);
         ivSendMessage = findViewById(R.id.ivSendMessage);
         ivAttachFile = findViewById(R.id.ivAttachFile);
+        chatConstraintLayout = findViewById(R.id.toolbarConstraintLayout);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -173,10 +176,24 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        chatConstraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userId = FirebaseAuth.getInstance().getUid();
+                sendToUserInfoActivity(userId);
+            }
+        });
 
         getUserDetails();
         getMessage();
         setChatList();
+    }
+
+    private void sendToUserInfoActivity(String userId)
+    {
+        Intent intent = new Intent(getApplicationContext(),UserInfoActivity.class);
+        intent.putExtra("userId",hisUid);
+        startActivity(intent);
     }
 
     @Override
@@ -374,14 +391,16 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         setUserStatus("online");
 
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         setUserStatus(String.valueOf(System.currentTimeMillis()));
         super.onPause();
     }

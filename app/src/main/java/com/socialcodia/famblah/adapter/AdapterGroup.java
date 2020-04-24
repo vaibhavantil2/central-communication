@@ -60,7 +60,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         }
         catch (Exception e)
         {
-            Picasso.get().load(R.drawable.person_female).into(holder.groupImageIcon);
+            Picasso.get().load(R.drawable.group_image).into(holder.groupImageIcon);
         }
 
         getLastMessage(model,holder);

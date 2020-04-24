@@ -100,7 +100,8 @@ public class ChatsFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
+    {
         inflater.inflate(R.menu.main_menu,menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

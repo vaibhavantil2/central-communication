@@ -1,6 +1,8 @@
 package com.socialcodia.famblah.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,6 +86,36 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
             }
         });
 
+        holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "You have long clicked", Toast.LENGTH_SHORT).show();
+                showDialogue();
+                return true;
+            }
+        });
+
+    }
+
+    private void showDialogue()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Remove");
+        builder.setMessage("Are you sure want to remove");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(context, "You have clicked on yes", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     private void getLastMessage(final ModelUser model, final ViewHolder holder)
