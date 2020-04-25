@@ -253,6 +253,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
     private void sendToHome()
     {
         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
@@ -268,7 +269,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
     {
         if (firebaseUser!=null)
         {
-            mRef.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+            mRef.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists())

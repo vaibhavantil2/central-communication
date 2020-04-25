@@ -72,13 +72,13 @@ public class ViewStatusActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         //Firebase Init
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendToMainActivity();
-            }
-        },10000);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                onBackPressed();
+//            }
+//        },5000);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
@@ -105,6 +105,7 @@ public class ViewStatusActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
         getStatus(statusId);
         setStatusView();
+        getStatusViewsCount();
     }
 
     private void sendToLogin()
@@ -141,6 +142,7 @@ public class ViewStatusActivity extends AppCompatActivity {
                     String statusId = ds.child(Constants.STATUS_ID).getValue(String.class);
                     String statusTimestamp = ds.child(Constants.TIMESTAMP).getValue(String.class);
                     String statusSenderId = ds.child(Constants.STATUS_SENDER_ID).getValue(String.class);
+
                     //Set Data
                     if (statusContent.equals("famblah"))
                     {
@@ -151,7 +153,8 @@ public class ViewStatusActivity extends AppCompatActivity {
                         tvStatusContent.setText(statusContent);
                     }
 
-                    try {
+                    try
+                    {
                         Picasso.get().load(statusImageData).into(statusImage);
                     }
                     catch (Exception e)
@@ -188,12 +191,55 @@ public class ViewStatusActivity extends AppCompatActivity {
 
     private void setStatusView()
     {
-        HashMap<String,Object> map = new HashMap<>();
-        map.put(Constants.USER_ID,userId);
-        map.put(Constants.STATUS_ID,statusId);
-        map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
+        Query query = mStatusRef.orderByChild(Constants.STATUS_ID).equalTo(statusId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    String statusSender = ds.child(Constants.STATUS_SENDER_ID).getValue(String.class);
+                    if (statusSender.equals(userId))
+                    {
+                        Toast.makeText(ViewStatusActivity.this, "Welcome to your status stats", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        setStatusSeen();
+                    }
+                }
+            }
 
-        mStatusRef.child(statusId).child("seen").child(userId).setValue(map);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setStatusSeen()
+    {
+        mStatusRef.child(statusId).child("seen").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+
+                }
+                else
+                {
+                    HashMap<String,Object> map = new HashMap<>();
+                    map.put(Constants.USER_ID,userId);
+                    map.put(Constants.STATUS_ID,statusId);
+                    map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
+                    mStatusRef.child(statusId).child("seen").child(userId).setValue(map);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getStatusSenderInfo(String statusSenderId)
@@ -232,6 +278,29 @@ public class ViewStatusActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm:a");
         String time = sdf.format(new Date(ts));
         return time;
+    }
+
+    private void getStatusViewsCount()
+    {
+        mStatusRef.child(statusId).child("seen").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    String viewsCount = String.valueOf(dataSnapshot.getChildrenCount());
+                    tvStatusViewsCount.setText(viewsCount+" views");
+                }
+                else
+                {
+                    tvStatusViewsCount.setText("No views");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
