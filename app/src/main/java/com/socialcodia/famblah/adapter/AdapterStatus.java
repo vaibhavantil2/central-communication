@@ -38,8 +38,6 @@ public class AdapterStatus extends RecyclerView.Adapter<AdapterStatus.ViewHolder
     List<ModelStatus> modelStatusList;
     Context context;
 
-
-
     String name;
 
     public AdapterStatus(List<ModelStatus> modelStatusList, Context context) {
@@ -65,7 +63,7 @@ public class AdapterStatus extends RecyclerView.Adapter<AdapterStatus.ViewHolder
         String statusSenderName = modelStatusList.get(position).getName();
         String timestamp = modelStatusList.get(position).getTimestamp();
 
-        holder.tvStatusTimestamp.setText(getTime(timestamp));
+//        holder.tvStatusTimestamp.setText(getTime(timestamp));
 
         try {
             Picasso.get().load(statusImage).into(holder.userProfileImage);

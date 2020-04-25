@@ -58,18 +58,21 @@
         <EditText
             android:id="@+id/inputStatusContent"
             android:layout_width="0dp"
-            android:layout_weight="9"
+            android:layout_weight="10"
             android:layout_height="wrap_content"
             android:hint="Write Something..."
             android:ems="10"
             android:inputType="textPersonName"/>
 
-        <ImageView
-            android:id="@+id/btnAddStatus"
-            android:layout_width="0dp"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddStatus"
+            android:layout_width="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
             android:layout_weight="1"
-            android:tint="@color/colorPrimaryDark"
-            android:layout_height="50dp"
+            android:clickable="true"
             android:src="@drawable/ic_send_white" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,10 +32,8 @@ public class TabAdapter extends FragmentPagerAdapter {
             case 1:
                 StatusFragment statusFragment = new StatusFragment();
                 return statusFragment;
+
             case 2:
-                CallsFragment callsFragment = new CallsFragment();
-                return callsFragment;
-            case 3:
                 GroupsFragment groupsFragment = new GroupsFragment();
                 return groupsFragment;
             default:
@@ -46,7 +44,7 @@ public class TabAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @Nullable
@@ -59,8 +57,6 @@ public class TabAdapter extends FragmentPagerAdapter {
             case 1:
                  return "Status";
             case 2:
-                return "Calls";
-            case 3:
                 return "Groups";
             default:
                 return null;

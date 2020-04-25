@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ViewStatusActivity extends AppCompatActivity {
 
@@ -103,7 +104,7 @@ public class ViewStatusActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         getStatus(statusId);
-
+        setStatusView();
     }
 
     private void sendToLogin()
@@ -187,7 +188,12 @@ public class ViewStatusActivity extends AppCompatActivity {
 
     private void setStatusView()
     {
+        HashMap<String,Object> map = new HashMap<>();
+        map.put(Constants.USER_ID,userId);
+        map.put(Constants.STATUS_ID,statusId);
+        map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
 
+        mStatusRef.child(statusId).child("seen").child(userId).setValue(map);
     }
 
     private void getStatusSenderInfo(String statusSenderId)

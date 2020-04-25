@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -47,8 +48,9 @@ public class AddStatusActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     private EditText inputStatusContent;
-    private ImageView selectedStatusImage, btnAddStatus, userProfileImage;
+    private ImageView selectedStatusImage, userProfileImage;
     private TextView tvUserName;
+    FloatingActionButton btnAddStatus;
 
     String statusContent,userName;
     String currentUserId;
@@ -75,7 +77,7 @@ public class AddStatusActivity extends AppCompatActivity {
         selectedStatusImage = findViewById(R.id.selectedStatusImage);
         tvUserName = findViewById(R.id.tvUserName);
         userProfileImage = findViewById(R.id.userProfileImage);
-        btnAddStatus = findViewById(R.id.btnAddStatus);
+        btnAddStatus = findViewById(R.id.fabAddStatus);
         toolbar = findViewById(R.id.addStatusToolbar);
 
         //Firebase Init
@@ -131,6 +133,7 @@ public class AddStatusActivity extends AppCompatActivity {
 
     private void UploadImage()
     {
+        Toast.makeText(this, "Please wait... Adding Status", Toast.LENGTH_SHORT).show();
         String fileNameAndPath = "Status/famblah_"+System.currentTimeMillis();
         mStorageRef.child(fileNameAndPath).putFile(filePath).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -154,14 +157,15 @@ public class AddStatusActivity extends AppCompatActivity {
         statusContent = inputStatusContent.getText().toString().trim();
         if (statusContent.isEmpty())
         {
+            String statusId =  mRef.push().getKey();
             HashMap<String,Object> map = new HashMap<>();
             map.put(Constants.STATUS_IMAGE,imageDownloadUrl);
             map.put(Constants.STATUS_CONTENT,"famblah");
-            map.put(Constants.STATUS_ID,mRef.push().getKey());
+            map.put(Constants.STATUS_ID,statusId);
             map.put(Constants.STATUS_SENDER_NAME,userName);
             map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
             map.put(Constants.STATUS_SENDER_ID,mAuth.getCurrentUser().getUid());
-            mRef.child("Status").push().setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            mRef.child("Status").child(statusId).setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(AddStatusActivity.this, "Status Has Been Added", Toast.LENGTH_SHORT).show();
@@ -171,14 +175,15 @@ public class AddStatusActivity extends AppCompatActivity {
         }
         else
         {
+            String statusId =  mRef.push().getKey();
             HashMap<String,Object> map = new HashMap<>();
             map.put(Constants.STATUS_IMAGE,imageDownloadUrl);
             map.put(Constants.STATUS_CONTENT,statusContent);
-            map.put(Constants.STATUS_ID,mRef.push().getKey());
+            map.put(Constants.STATUS_ID,statusId);
             map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
             map.put(Constants.STATUS_SENDER_NAME,userName);
             map.put(Constants.STATUS_SENDER_ID,mAuth.getCurrentUser().getUid());
-            mRef.child("Status").push().setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            mRef.child("Status").child(statusId).setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(AddStatusActivity.this, "Status Has Been Added", Toast.LENGTH_SHORT).show();
