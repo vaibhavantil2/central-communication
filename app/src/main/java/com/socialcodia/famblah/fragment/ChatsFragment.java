@@ -50,7 +50,6 @@ public class ChatsFragment extends Fragment {
 
     List<ModelChatList> modelChatListList;
     List<ModelUser> modelUserList;
-    List<ModelGroup> modelGroupList;
 
     String userId;
 
@@ -60,7 +59,6 @@ public class ChatsFragment extends Fragment {
 
 
         modelChatListList = new ArrayList<>();
-        modelGroupList = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
@@ -89,7 +87,6 @@ public class ChatsFragment extends Fragment {
 
         setHasOptionsMenu(true);
         getChatList();
-        getGroupList();
         return view;
     }
 
@@ -119,13 +116,6 @@ public class ChatsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendToCreateGroup()
-    {
-        Intent intent = new Intent(getContext(), CreateGroupActivity.class);
-        startActivity(intent);
-        getActivity().finish();
-    }
-
     private void doLogout()
     {
         mAuth.signOut();
@@ -153,31 +143,6 @@ public class ChatsFragment extends Fragment {
                     modelChatListList.add(modelChatList);
                 }
                 getUsersByChatListId();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void getGroupList()
-    {
-        modelUserList = new ArrayList<>();
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Groups");
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                modelUserList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren())
-                {
-                    ModelGroup modelGroup = ds.getValue(ModelGroup.class);
-                    modelGroupList.add(modelGroup);
-                }
-                AdapterGroup adapterGroup = new AdapterGroup(modelGroupList,getContext());
-                chatListRecyclerView.setAdapter(adapterGroup);
-                adapterGroup.notifyDataSetChanged();
             }
 
             @Override

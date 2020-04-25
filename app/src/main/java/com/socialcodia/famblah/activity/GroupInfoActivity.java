@@ -1,12 +1,15 @@
 package com.socialcodia.famblah.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +31,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     String groupId, name;
 
     Intent intent;
-
+    ActionBar actionBar;
     private TextView tvGroupName, tvGroupDescription, tvCreatedBy;
     private ImageView groupImageIcon;
 
@@ -58,27 +61,37 @@ public class GroupInfoActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
 
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
         intent = getIntent();
         groupId = intent.getStringExtra("groupId");
 
-        getGroupDetails(groupId);
+       getGroupDetails(groupId);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp()
+    {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 
     private void getGroupDetails(String groupId)
     {
-        mRef.child(Constants.GROUPS).child(groupId);
-        mRef.addValueEventListener(new ValueEventListener() {
+        mRef.child(Constants.GROUPS).child(groupId)
+        .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren())
-                {
-                    //Get Data
-                    String groupName = ds.child(Constants.GROUP_NAME).getValue(String.class);
-                    String groupDesc = ds.child(Constants.GROUP_DESCRIPTION).getValue(String.class);
-                    String createdBy = ds.child(Constants.GROUP_CREATOR).getValue(String.class);
-                    String createdTime = ds.child(Constants.TIMESTAMP).getValue(String.class);
-                    String groupImage = ds.child(Constants.GROUP_IMAGE).getValue(String.class);
 
+                String groupName = dataSnapshot.child(Constants.GROUP_NAME).getValue(String.class);
+                String groupDesc = dataSnapshot.child(Constants.GROUP_DESCRIPTION).getValue(String.class);
+                String createdBy = dataSnapshot.child(Constants.GROUP_CREATOR).getValue(String.class);
+                String createdTime = dataSnapshot.child(Constants.TIMESTAMP).getValue(String.class);
+                String groupImage = dataSnapshot.child(Constants.GROUP_IMAGE).getValue(String.class);
+                    //Get Data
+                    Toast.makeText(GroupInfoActivity.this, "Group Name is "+groupName, Toast.LENGTH_SHORT).show();
                     mRef.child(Constants.USERS).child(createdBy).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -93,10 +106,16 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                     //Set Data
 
-                    String createdByAndTime = "Created By " + name + " at " +getTime(createdTime);
+                   String createdByAndTime = "Created By " + name + " at " +getTime(createdTime);
+
+                   if (groupDesc.equals("famblah"))
+                   {
+                       tvGroupDescription.setVisibility(View.GONE);
+                   }
 
                     tvGroupName.setText(groupName);
                     tvGroupDescription.setText(groupDesc);
+                    actionBar.setTitle(groupName);
                     tvCreatedBy.setText(createdByAndTime);
 
                     try {
@@ -106,12 +125,10 @@ public class GroupInfoActivity extends AppCompatActivity {
                     {
                         Picasso.get().load(R.drawable.group_image).into(groupImageIcon);
                     }
-                }
-            }
 
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }

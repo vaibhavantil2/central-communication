@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +56,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private EditText inputGroupMessage;
     private ImageView ivAttachGroupFile, ivSendGroupMessage, groupImageIcon;
     private Toolbar mToolbar;
+    private ConstraintLayout groupConstraintLayout;
     ActionBar actionBar;
     Intent intent;
     String groupId,userId;
@@ -81,7 +83,7 @@ public class GroupChatActivity extends AppCompatActivity {
         groupImageIcon = findViewById(R.id.groupImageIcon);
         recyclerView = findViewById(R.id.groupChatRecyclerView);
         mToolbar = findViewById(R.id.toolbar);
-
+        groupConstraintLayout = findViewById(R.id.groupConstraintLayout);
         //Firebase init
 
         mAuth = FirebaseAuth.getInstance();
@@ -93,8 +95,8 @@ public class GroupChatActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
 
-//        actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setDisplayShowHomeEnabled(true);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //Get Data from intent
         intent = getIntent();
@@ -129,6 +131,13 @@ public class GroupChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ValidateMessage();
+            }
+        });
+
+        groupConstraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendToGroupInfo();
             }
         });
     }
@@ -252,13 +261,13 @@ public class GroupChatActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.group_chat_menu,menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.group_chat_menu,menu);
-        return super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem menuItem)
@@ -312,7 +321,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 }
                 catch (Exception e)
                 {
-                    Picasso.get().load(R.drawable.person_female).into(groupImageIcon);
+                    Picasso.get().load(R.drawable.group_image).into(groupImageIcon);
                 }
             }
 

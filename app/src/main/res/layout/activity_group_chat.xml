@@ -15,6 +15,7 @@
         android:layout_height="?attr/actionBarSize">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/groupConstraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
