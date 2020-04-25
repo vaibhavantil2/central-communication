@@ -205,7 +205,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
                                 }
                                 else
                                 {
-                                    Toast.makeText(PhoneLoginActivity.this, "Profiel Update Failed", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(PhoneLoginActivity.this, "Profile Update Failed", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -235,7 +235,6 @@ public class PhoneLoginActivity extends AppCompatActivity {
                     if (task.isSuccessful())
                     {
                         FirebaseUser firebaseUser = task.getResult().getUser();
-                        updateProfile(firebaseUser);
                         btnGenerateOtp.setEnabled(true);
                         btnVerifyOtp.setEnabled(true);
                         checkLoginState(firebaseUser);
@@ -265,7 +264,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void checkLoginState(FirebaseUser firebaseUser)
+    private void checkLoginState(final FirebaseUser firebaseUser)
     {
         if (firebaseUser!=null)
         {
@@ -284,6 +283,10 @@ public class PhoneLoginActivity extends AppCompatActivity {
                         {
                             sendToHome();
                         }
+                    }
+                    else
+                    {
+                        updateProfile(firebaseUser);
                     }
                 }
 

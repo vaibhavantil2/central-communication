@@ -44,7 +44,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class GroupChatActivity extends AppCompatActivity {
 
@@ -56,7 +55,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private EditText inputGroupMessage;
     private ImageView ivAttachGroupFile, ivSendGroupMessage, groupImageIcon;
     private Toolbar mToolbar;
-    private ActionBar actionBar;
+    ActionBar actionBar;
     Intent intent;
     String groupId,userId;
 
@@ -135,7 +134,8 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
+    public boolean onSupportNavigateUp()
+    {
         onBackPressed();
         return super.onSupportNavigateUp();
     }

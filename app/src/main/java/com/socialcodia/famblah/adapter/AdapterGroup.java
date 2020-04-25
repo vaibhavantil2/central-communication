@@ -26,6 +26,8 @@ import com.socialcodia.famblah.model.ModelGroup;
 import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> {
@@ -86,7 +88,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                     String sender = ds.child(Constants.CHAT_SENDER_ID).getValue(String.class);
 
                     holder.tvLastMessage.setText(message);
-
+                    holder.tvMessageTimestamp.setText(getTime(timestamp));
                     //Get Sender Information
 
                     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.USERS);
@@ -116,6 +118,14 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
         });
     }
 
+    private String getTime(String timestamp)
+    {
+        Long ts = Long.parseLong(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:a");
+        String time = sdf.format(new Date(ts));
+        return time;
+    }
+
     private void sendToGroupChat(String gid)
     {
         Intent intent= new Intent(context, GroupChatActivity.class);
@@ -130,7 +140,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView tvGroupName,tvLastMessageSenderName,tvLastMessage;
+        private TextView tvGroupName,tvLastMessageSenderName,tvLastMessage,tvMessageTimestamp;
         private ImageView groupImageIcon;
         private ConstraintLayout groupLayout;
 
@@ -140,6 +150,7 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
             tvGroupName = itemView.findViewById(R.id.tvGroupName);
             tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
             tvLastMessageSenderName = itemView.findViewById(R.id.tvLastMessageSenderName);
+            tvMessageTimestamp = itemView.findViewById(R.id.tvMessageTimestamp);
             groupImageIcon = itemView.findViewById(R.id.groupImageIcon);
             groupLayout = itemView.findViewById(R.id.groupLayout);
 
