@@ -7,6 +7,7 @@
     tools:context=".fragment.GroupsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="100dp"
         android:id="@+id/groupsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >

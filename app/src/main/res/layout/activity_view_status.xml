@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.AddStatusAcitivity">
+    tools:context=".activity.ViewStatusActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -83,17 +83,34 @@
             android:id="@+id/inputReplyStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
+            android:layout_weight="10"
+            android:layout_gravity="bottom"
             android:ems="10"
             android:hint="Write Something..."
             android:inputType="textPersonName" />
 
-        <ImageView
-            android:id="@+id/btnReplyStatus"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabReplyStatus"
+            android:layout_width="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
             android:layout_weight="1"
-            android:src="@drawable/ic_send_white"
-            android:tint="@color/colorPrimaryDark" />
+            android:clickable="true"
+            android:src="@drawable/ic_send_white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvStatusViewsCount"
+            android:text="10 Seens"
+            android:drawableTop="@drawable/ic_eye_white"
+            android:drawableTint="#000000"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

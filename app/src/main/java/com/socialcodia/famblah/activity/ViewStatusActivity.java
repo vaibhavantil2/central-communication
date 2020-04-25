@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,9 +34,12 @@ import java.util.Date;
 
 public class ViewStatusActivity extends AppCompatActivity {
 
-    private TextView tvStatusContent, tvUserName, tvStatusTimestamp;
+    private TextView tvStatusContent, tvUserName, tvStatusTimestamp, tvStatusViewsCount;
     private EditText inputStatusReply;
-    private ImageView btnSendReply,userProfileImage,statusImage;
+    private ImageView userProfileImage,statusImage;
+    FloatingActionButton btnSendReply;
+
+    String userId;
 
     //Firebase
 
@@ -43,6 +48,7 @@ public class ViewStatusActivity extends AppCompatActivity {
     DatabaseReference mUserRef;
     DatabaseReference mStatusRef;
     DatabaseReference mStatusSeenRef;
+    FirebaseUser mUser;
 
     String statusId;
 
@@ -57,8 +63,9 @@ public class ViewStatusActivity extends AppCompatActivity {
         tvStatusContent = findViewById(R.id.tvStatusContent);
         tvUserName = findViewById(R.id.tvUserName);
         tvStatusTimestamp = findViewById(R.id.tvStatusTimestamp);
+        tvStatusViewsCount = findViewById(R.id.tvStatusViewsCount);
         inputStatusReply = findViewById(R.id.inputReplyStatus);
-        btnSendReply = findViewById(R.id.btnReplyStatus);
+        btnSendReply = findViewById(R.id.fabReplyStatus);
         userProfileImage = findViewById(R.id.userProfileImage);
         statusImage =findViewById(R.id.statusImage);
         mToolbar = findViewById(R.id.toolbar);
@@ -77,7 +84,16 @@ public class ViewStatusActivity extends AppCompatActivity {
         mUserRef = mDatabase.getReference("Users");
         mStatusRef = mDatabase.getReference("Status");
         mStatusSeenRef = mDatabase.getReference("Status_Seen");
+        mUser = mAuth.getCurrentUser();
 
+        if (mUser!=null)
+        {
+            userId = mUser.getUid();
+        }
+        else
+        {
+            sendToLogin();
+        }
 
         Intent intent = getIntent();
         statusId = intent.getStringExtra("statusId");
@@ -90,8 +106,16 @@ public class ViewStatusActivity extends AppCompatActivity {
 
     }
 
+    private void sendToLogin()
+    {
+        Intent intent = new Intent(getApplicationContext(),PhoneLoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
-    public boolean onSupportNavigateUp() {
+    public boolean onSupportNavigateUp()
+    {
         onBackPressed();
         return super.onSupportNavigateUp();
     }
@@ -134,6 +158,19 @@ public class ViewStatusActivity extends AppCompatActivity {
                         Toast.makeText(ViewStatusActivity.this, "Oops! Failed to load status Image", Toast.LENGTH_SHORT).show();
                     }
 
+                    if (userId.equals(statusSenderId))
+                    {
+                        inputStatusReply.setVisibility(View.GONE);
+                        btnSendReply.setVisibility(View.GONE);
+                        tvStatusViewsCount.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        inputStatusReply.setVisibility(View.VISIBLE);
+                        btnSendReply.setVisibility(View.VISIBLE);
+                        tvStatusViewsCount.setVisibility(View.GONE);
+                    }
+
                     tvStatusTimestamp.setText(getTime(statusTimestamp));
 
                     getStatusSenderInfo(statusSenderId);
@@ -146,6 +183,11 @@ public class ViewStatusActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setStatusView()
+    {
+
     }
 
     private void getStatusSenderInfo(String statusSenderId)
