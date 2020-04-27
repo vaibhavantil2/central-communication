@@ -40,7 +40,7 @@ public class ViewStatusActivity extends AppCompatActivity {
     private ImageView userProfileImage,statusImage;
     FloatingActionButton btnSendReply;
 
-    String userId;
+    String userId,userName;
 
     //Firebase
 
@@ -51,7 +51,7 @@ public class ViewStatusActivity extends AppCompatActivity {
     DatabaseReference mStatusSeenRef;
     FirebaseUser mUser;
 
-    String statusId;
+    String statusId,hisUid;
 
     Toolbar mToolbar;
     ActionBar actionBar;
@@ -98,6 +98,13 @@ public class ViewStatusActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         statusId = intent.getStringExtra("statusId");
+
+        btnSendReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendReply();
+            }
+        });
 
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
@@ -251,8 +258,9 @@ public class ViewStatusActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    String userName = ds.child(Constants.USER_NAME).getValue(String.class);
+                    userName = ds.child(Constants.USER_NAME).getValue(String.class);
                     String userImage = ds.child(Constants.USER_IMAGE).getValue(String.class);
+                    hisUid = ds.child(Constants.USER_ID).getValue(String.class);
                     tvUserName.setText(userName);
                     try {
                         Picasso.get().load(userImage).into(userProfileImage);
@@ -301,6 +309,31 @@ public class ViewStatusActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void sendReply()
+    {
+        String replyMessage = inputStatusReply.getText().toString().trim();
+        if (replyMessage.isEmpty())
+        {
+            Toast.makeText(this, "Can't Send Empty Message", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            DatabaseReference chatsRef = mDatabase.getReference("Chats");
+            String messageId = chatsRef.push().getKey();
+            HashMap<String,Object> map= new HashMap<>();
+            map.put(Constants.CHAT_MESSAGE,replyMessage);
+            map.put(Constants.CHAT_STATUS,1);
+            map.put(Constants.CHAT_SENDER_ID,userId);
+            map.put(Constants.CHAT_RECEIVER_ID,hisUid);
+            map.put(Constants.CHAT_MESSAGE_ID,messageId);
+            map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
+            map.put(Constants.CHAT_TYPE,"text");
+            chatsRef.child(messageId).setValue(map);
+            inputStatusReply.setText("");
+            Toast.makeText(this, "Reply has been sent", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

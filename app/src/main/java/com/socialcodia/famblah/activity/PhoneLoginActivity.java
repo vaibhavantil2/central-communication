@@ -149,7 +149,8 @@ public class PhoneLoginActivity extends AppCompatActivity {
         );
     }
 
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks= new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks= new PhoneAuthProvider.OnVerificationStateChangedCallbacks()
+    {
         @Override
         public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
             signInWithPhoneAuthCredential(phoneAuthCredential);

@@ -26,6 +26,7 @@ import com.socialcodia.famblah.R;
 import com.socialcodia.famblah.activity.AllUserActivity;
 import com.socialcodia.famblah.activity.CreateGroupActivity;
 import com.socialcodia.famblah.activity.PhoneLoginActivity;
+import com.socialcodia.famblah.activity.SettingActivity;
 import com.socialcodia.famblah.adapter.AdapterChatList;
 import com.socialcodia.famblah.adapter.AdapterGroup;
 import com.socialcodia.famblah.adapter.AdapterUser;
@@ -111,9 +112,18 @@ public class ChatsFragment extends Fragment {
             case R.id.miLogout:
                 doLogout();
                 break;
+            case R.id.miSetting:
+                sendToSetting();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendToSetting()
+    {
+        Intent intent = new Intent(getContext(), SettingActivity.class);
+        startActivity(intent);
     }
 
     private void doLogout()
