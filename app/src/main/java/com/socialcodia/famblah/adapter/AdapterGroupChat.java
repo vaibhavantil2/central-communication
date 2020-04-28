@@ -1,8 +1,12 @@
 package com.socialcodia.famblah.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.socialcodia.famblah.R;
+import com.socialcodia.famblah.activity.ViewImageActivity;
 import com.socialcodia.famblah.model.ModelGroupChat;
 import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
@@ -28,6 +33,8 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.ViewHolder>
 {
@@ -66,7 +73,7 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        ModelGroupChat model = modelGroupChatList.get(position);
+        final ModelGroupChat model = modelGroupChatList.get(position);
 
         String message = model.getMessage();
         String messageId = model.getMid();
@@ -113,10 +120,49 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
             }
         }
 
+        if (model.getType().equals("image"))
+        {
+            holder.ivChatImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendToViewImage(model);
+                }
+            });
+        }
+
+        holder.chat_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+                builder.setTitle("Delete");
+                builder.setMessage("Are you sure want to delete");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context, "Yes Clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context, "No Clcicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.create().show();
+            }
+        });
 
         holder.tvChatTimestamp.setText(getTime(timestamp));
 
         setSenderName(model,holder);
+    }
+
+    private void sendToViewImage(ModelGroupChat model)
+    {
+        Intent intent = new Intent(context, ViewImageActivity.class);
+        intent.putExtra("image",model.getImage());
+        intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void setSenderName(final ModelGroupChat model, final ViewHolder holder)

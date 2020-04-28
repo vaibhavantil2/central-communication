@@ -82,7 +82,7 @@ public class GroupChatActivity extends AppCompatActivity {
         ivSendGroupMessage = findViewById(R.id.ivSendGroupMessage);
         groupImageIcon = findViewById(R.id.groupImageIcon);
         recyclerView = findViewById(R.id.groupChatRecyclerView);
-        mToolbar = findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.groupToolbar);
         groupConstraintLayout = findViewById(R.id.groupConstraintLayout);
         //Firebase init
 
@@ -92,11 +92,13 @@ public class GroupChatActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference();
         mUser = mAuth.getCurrentUser();
+
+        //set toolbar
+        mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
         actionBar = getSupportActionBar();
-
-//        actionBar.setDisplayShowHomeEnabled(true);
-//        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //Get Data from intent
         intent = getIntent();
@@ -266,38 +268,18 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.group_chat_menu,menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem menuItem)
-    {
-        int id = menuItem.getItemId();
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id =item.getItemId();
         switch (id)
         {
-            case R.id.miLogout:
-                mAuth.signOut();
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            case R.id.miGroupInfo:
+                sendToGroupInfo();
                 break;
+            default:
+                Toast.makeText(this, "Oops! Something went wrong. you can report it to famblah", Toast.LENGTH_SHORT).show();
         }
-
-        return super.onOptionsItemSelected(menuItem);
+        return super.onOptionsItemSelected(item);
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        int id =item.getItemId();
-//        switch (id)
-//        {
-//            case R.id.miGroupInfo:
-//                sendToGroupInfo();
-//                break;
-//            default:
-//                Toast.makeText(this, "Oops! Something went wrong. you can report it to famblah", Toast.LENGTH_SHORT).show();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     private void sendToGroupInfo()
     {

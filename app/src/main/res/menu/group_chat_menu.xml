@@ -4,24 +4,21 @@
 
     <item
         android:id="@+id/miGroupInfo"
-        android:title="Group Info"
-        app:showAsAction="always"
-        android:orderInCategory="10"
-        android:icon="@drawable/ic_info_white"
+        android:title="About Group"
+        android:orderInCategory="11"
         />
+
+
     <item
-        android:id="@+id/miLogout"
-        android:title="Logout"
-        app:showAsAction="never"
+        android:id="@+id/miAddMember"
+        android:title="Add Member"
         android:orderInCategory="10"
         />
 
     <item
-        android:id="@+id/miCreateGroup"
-        android:title="Create Group"
-        app:showAsAction="always"
+        android:id="@+id/miLeaveGroup"
+        android:title="Leave Group"
         android:orderInCategory="10"
-        android:icon="@drawable/ic_creategroup_white"
         />
 
 </menu>
