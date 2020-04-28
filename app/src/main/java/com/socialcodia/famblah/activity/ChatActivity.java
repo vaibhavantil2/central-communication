@@ -140,7 +140,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        layoutManager.setReverseLayout(true);
         chatRecyclerView.setLayoutManager(layoutManager);
 
         //Typing status
@@ -379,6 +378,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
 
                     AdapterChat adapterChat = new AdapterChat(getApplicationContext(),modelChatList);
+                    chatRecyclerView.scrollToPosition(modelChatList.size() - 1);
                     chatRecyclerView.setAdapter(adapterChat);
                     adapterChat.notifyDataSetChanged();
                 }
