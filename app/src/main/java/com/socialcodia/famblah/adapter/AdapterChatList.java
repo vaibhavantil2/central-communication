@@ -61,7 +61,7 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ModelUser model = modelUserList.get(position);
+        final ModelUser model = modelUserList.get(position);
         String name = model.getName();
         String bio = model.getBio();
         String image = model.getImage();
@@ -89,15 +89,14 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
         holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(context, "You have long clicked", Toast.LENGTH_SHORT).show();
-                showDialogue();
+                showDialogue(model);
                 return true;
             }
         });
 
     }
 
-    private void showDialogue()
+    private void showDialogue(final ModelUser model)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Remove");
@@ -105,7 +104,7 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "You have clicked on yes", Toast.LENGTH_SHORT).show();
+                deleteChatList(model);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -116,6 +115,28 @@ public class AdapterChatList extends RecyclerView.Adapter<AdapterChatList.ViewHo
             }
         });
         builder.create().show();
+    }
+
+    private void deleteChatList(ModelUser model)
+    {
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("ChatList");
+        String userId = FirebaseAuth.getInstance().getUid();
+        String hisUserId = model.getUid();
+        mRef.child(userId).child(hisUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    ds.getRef().removeValue();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getLastMessage(final ModelUser model, final ViewHolder holder)

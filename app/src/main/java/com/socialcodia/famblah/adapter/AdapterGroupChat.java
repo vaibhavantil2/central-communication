@@ -129,13 +129,17 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
                         for (DataSnapshot ds: dataSnapshot.getChildren())
                         {
                             String name = ds.child(Constants.USER_NAME).getValue(String.class);
-                            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(model.getSender()))
+                            if (FirebaseAuth.getInstance().getCurrentUser()!=null)
                             {
+                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                if (userId.equals(model.getSender()))
+                                {
 
-                            }
-                            else
-                            {
-                                holder.tvMessageSenderName.setText(name);
+                                }
+                                else
+                                {
+                                    holder.tvMessageSenderName.setText(name);
+                                }
                             }
                         }
                     }
