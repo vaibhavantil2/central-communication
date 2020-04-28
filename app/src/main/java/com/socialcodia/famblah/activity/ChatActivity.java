@@ -140,6 +140,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setReverseLayout(true);
         chatRecyclerView.setLayoutManager(layoutManager);
 
         //Typing status

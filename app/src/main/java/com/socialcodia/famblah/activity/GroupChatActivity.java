@@ -109,6 +109,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
         //LinearLayoutManager for recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
 
         modelGroupChatList = new ArrayList<>();
