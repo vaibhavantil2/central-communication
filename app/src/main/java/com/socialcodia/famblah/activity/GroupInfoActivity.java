@@ -81,7 +81,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private void getGroupDetails(String groupId)
     {
         mRef.child(Constants.GROUPS).child(groupId)
-        .addValueEventListener(new ValueEventListener() {
+        .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
