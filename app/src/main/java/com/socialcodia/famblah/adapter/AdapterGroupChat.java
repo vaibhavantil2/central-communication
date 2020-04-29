@@ -130,9 +130,9 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
             });
         }
 
-        holder.chat_layout.setOnClickListener(new View.OnClickListener() {
+        holder.chat_layout.setOnLongClickListener(new OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
                 builder.setTitle("Delete");
                 builder.setMessage("Are you sure want to delete");
@@ -149,6 +149,7 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
                     }
                 });
                 builder.create().show();
+                return true;
             }
         });
 

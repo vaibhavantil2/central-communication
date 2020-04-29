@@ -262,6 +262,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
     private void sendToSecondStepUpdateProfileActivity()
     {
         Intent intent = new Intent(getApplicationContext(),SecondStepUpdateProfile.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }

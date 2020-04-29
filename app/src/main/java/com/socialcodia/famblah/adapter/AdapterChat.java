@@ -3,6 +3,7 @@ package com.socialcodia.famblah.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.socialcodia.famblah.R;
+import com.socialcodia.famblah.activity.ViewImageActivity;
 import com.socialcodia.famblah.model.ModelChat;
 import com.socialcodia.famblah.storage.Constants;
 import com.squareup.picasso.Picasso;
@@ -70,11 +72,24 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position)
     {
+        final ModelChat modelChat = modelChatList.get(position);
         String message = modelChatList.get(position).getMessage();
         String timestamp = modelChatList.get(position).getTimestamp();
         String sender = modelChatList.get(position).getSender();
         String chatImage = modelChatList.get(position).getImage();
         int messageStatus = modelChatList.get(position).getStatus();
+
+        if (modelChatList.get(position).getType().equals("image") && modelChatList.get(position).getStatus()==1)
+        {
+
+            holder.ivChatImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendToViewImage(modelChat);
+                }
+            });
+        }
+
 
         if (messageStatus==1)
         {
@@ -110,10 +125,9 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
 
         holder.tvChatTimestamp.setText(getTime(timestamp));
 
-        holder.chat_layout.setOnClickListener(new View.OnClickListener()
-        {
+        holder.chat_layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
                 builder.setTitle("Delete");
                 builder.setMessage("Are you sure want to delete");
@@ -133,8 +147,19 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
                     }
                 });
                 builder.create().show();
+
+                return true;
             }
         });
+
+    }
+
+    private void sendToViewImage(ModelChat modelChat)
+    {
+        Intent intent = new Intent(context, ViewImageActivity.class);
+        intent.putExtra("image",modelChat.getImage());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void deleteMessage(int position)
