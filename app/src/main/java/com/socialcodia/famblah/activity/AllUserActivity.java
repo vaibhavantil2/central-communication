@@ -77,7 +77,11 @@ public class AllUserActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     ModelUser modelUser = ds.getValue(ModelUser.class);
-                    modelUserList.add(modelUser);
+                    assert modelUser != null;
+                    if (!modelUser.getUid().equals(userId))
+                    {
+                        modelUserList.add(modelUser);
+                    }
                 }
                 AdapterUser adapterUser = new AdapterUser(getApplicationContext(),modelUserList);
                 allUserRecyclerView.setAdapter(adapterUser);
