@@ -88,14 +88,15 @@ public class GroupInfoActivity extends AppCompatActivity {
                 String groupName = dataSnapshot.child(Constants.GROUP_NAME).getValue(String.class);
                 String groupDesc = dataSnapshot.child(Constants.GROUP_DESCRIPTION).getValue(String.class);
                 String createdBy = dataSnapshot.child(Constants.GROUP_CREATOR).getValue(String.class);
-                String createdTime = dataSnapshot.child(Constants.TIMESTAMP).getValue(String.class);
+                final String createdTime = dataSnapshot.child(Constants.TIMESTAMP).getValue(String.class);
                 String groupImage = dataSnapshot.child(Constants.GROUP_IMAGE).getValue(String.class);
                     //Get Data
-                    Toast.makeText(GroupInfoActivity.this, "Group Name is "+groupName, Toast.LENGTH_SHORT).show();
                     mRef.child(Constants.USERS).child(createdBy).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             name = dataSnapshot.child(Constants.USER_NAME).getValue(String.class);
+                            String createdByAndTime = "Created By " + name + " at " +getTime(createdTime);
+                            tvCreatedBy.setText(createdByAndTime);
                         }
 
                         @Override
@@ -106,8 +107,6 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                     //Set Data
 
-                   String createdByAndTime = "Created By " + name + " at " +getTime(createdTime);
-
                    if (groupDesc.equals("famblah"))
                    {
                        tvGroupDescription.setVisibility(View.GONE);
@@ -116,7 +115,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                     tvGroupName.setText(groupName);
                     tvGroupDescription.setText(groupDesc);
                     actionBar.setTitle(groupName);
-                    tvCreatedBy.setText(createdByAndTime);
+
 
                     try {
                         Picasso.get().load(groupImage).into(groupImageIcon);

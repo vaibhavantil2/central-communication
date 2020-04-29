@@ -277,8 +277,6 @@ public class GroupChatActivity extends AppCompatActivity {
             case R.id.miGroupInfo:
                 sendToGroupInfo();
                 break;
-            default:
-                Toast.makeText(this, "Oops! Something went wrong. you can report it to famblah", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
