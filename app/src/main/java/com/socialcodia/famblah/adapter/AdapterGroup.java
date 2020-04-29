@@ -87,7 +87,16 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                     String timestamp = ds.child(Constants.TIMESTAMP).getValue(String.class);
                     String sender = ds.child(Constants.CHAT_SENDER_ID).getValue(String.class);
 
-                    holder.tvLastMessage.setText(message);
+
+                    if (message.length()>30)
+                    {
+                        message = message.substring(0,30)+"...";
+                        holder.tvLastMessage.setText(message);
+                    }
+                    else
+                    {
+                        holder.tvLastMessage.setText(message);
+                    }
                     holder.tvMessageTimestamp.setText(getTime(timestamp));
                     //Get Sender Information
 
