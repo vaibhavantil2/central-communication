@@ -199,6 +199,7 @@ public class GroupChatActivity extends AppCompatActivity {
         map.put(Constants.CHAT_SENDER_ID,userId);
         map.put(Constants.TIMESTAMP,String.valueOf(System.currentTimeMillis()));
         map.put(Constants.CHAT_TYPE,"image");
+        map.put(Constants.GROUP_ID,groupId);
         map.put(Constants.CHAT_IMAGE,imageDownloadUrl);
         map.put(Constants.CHAT_STATUS,1);
         map.put(Constants.CHAT_MESSAGE_ID,messageId);
@@ -256,6 +257,7 @@ public class GroupChatActivity extends AppCompatActivity {
         map.put(Constants.CHAT_TYPE,"text");
         map.put(Constants.CHAT_MESSAGE,message);
         map.put(Constants.CHAT_STATUS,1);
+        map.put(Constants.GROUP_ID,groupId);
         map.put(Constants.CHAT_MESSAGE_ID,messageId);
         mChatRef.child(messageId).setValue(map);
         inputGroupMessage.setText("");

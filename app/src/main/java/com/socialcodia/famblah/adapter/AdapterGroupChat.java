@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.security.AccessController.getContext;
@@ -130,7 +131,8 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
             });
         }
 
-        holder.chat_layout.setOnLongClickListener(new OnLongClickListener() {
+        holder.chat_layout.setOnLongClickListener(new OnLongClickListener()
+        {
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
@@ -139,13 +141,13 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context, "Yes Clicked", Toast.LENGTH_SHORT).show();
+                        deleteMessage(model);
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context, "No Clcicked", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No Clicked", Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.create().show();
@@ -156,6 +158,31 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
         holder.tvChatTimestamp.setText(getTime(timestamp));
 
         setSenderName(model,holder);
+    }
+
+    private void deleteMessage(final ModelGroupChat model)
+    {
+         final DatabaseReference mRef = FirebaseDatabase.getInstance().getReference(Constants.GROUPS).child(model.getGroup_id()).child(Constants.CHATS).child(model.getMid());
+         mRef.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                 if (model.getSender().equals(mAuth.getUid()))
+                 {
+                     HashMap<String, Object> map = new HashMap<>();
+                     map.put(Constants.CHAT_STATUS,0);
+                     mRef.updateChildren(map);
+                 }
+                 else
+                 {
+                     Toast.makeText(context, "You can delete only your own messages", Toast.LENGTH_SHORT).show();
+                 }
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         });
     }
 
     private void sendToViewImage(ModelGroupChat model)
@@ -232,8 +259,8 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
     }
 
     @Override
-    public int getItemViewType(int position) {
-
+    public int getItemViewType(int position)
+    {
         if (modelGroupChatList.get(position).getSender().equals(mAuth.getUid()))
         {
             return MESSAGE_TYPE_RIGHT;
