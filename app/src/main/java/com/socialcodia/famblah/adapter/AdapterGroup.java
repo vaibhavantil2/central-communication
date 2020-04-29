@@ -86,16 +86,45 @@ public class AdapterGroup extends RecyclerView.Adapter<AdapterGroup.ViewHolder> 
                     String message = ds.child(Constants.CHAT_MESSAGE).getValue(String.class);
                     String timestamp = ds.child(Constants.TIMESTAMP).getValue(String.class);
                     String sender = ds.child(Constants.CHAT_SENDER_ID).getValue(String.class);
+                    String type = ds.child(Constants.CHAT_TYPE).getValue(String.class);
+                    int status = ds.child(Constants.CHAT_STATUS).getValue(Integer.class);
 
-
-                    if (message.length()>30)
+                    if (status==1 ) // im
                     {
-                        message = message.substring(0,30)+"...";
-                        holder.tvLastMessage.setText(message);
+                        if (type.equals("text"))
+                        {
+                            if (message.length()>30)
+                            {
+                                message = message.substring(0,30)+"...";
+                                holder.tvLastMessage.setText(message);
+                            }
+                            else
+                            {
+                                holder.tvLastMessage.setText(message);
+                            }
+                        }
+                        else
+                        {
+                            if (sender.equals(FirebaseAuth.getInstance().getUid()))
+                            {
+                                holder.tvLastMessage.setText(" You sent an image");
+                            }
+                            else
+                            {
+                                holder.tvLastMessage.setText(" Sent an image");
+                            }
+                        }
                     }
                     else
                     {
-                        holder.tvLastMessage.setText(message);
+                        if (sender.equals(FirebaseAuth.getInstance().getUid()))
+                        {
+                            holder.tvLastMessage.setText("You deleted this message");
+                        }
+                        else
+                        {
+                            holder.tvLastMessage.setText("This message was deleted");
+                        }
                     }
                     holder.tvMessageTimestamp.setText(getTime(timestamp));
                     //Get Sender Information

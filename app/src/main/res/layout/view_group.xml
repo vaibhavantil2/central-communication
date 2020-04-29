@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:singleLine="true"
         android:maxLines="1"
-        android:text="kjasdhfjkashdfkljashdfjhsdfasdfasdfasdfasdfasdf sdfadf"
+        android:text="No message..."
         android:ellipsize="end"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/tvLastMessageSenderName"
@@ -48,7 +48,6 @@
 
     <TextView
         android:id="@+id/tvMessageTimestamp"
-        android:text="asdfasdfasdf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="5dp"
