@@ -240,8 +240,8 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            tvMessageSenderName = itemView.findViewById(R.id.tvMessageSenderName);
+            # SMS service handlder
+            tvSMSMessageSenderName = itemView.findViewById(R.id.tvMessageSenderName);
             tvChatMessage = itemView.findViewById(R.id.tvChatMessage);
             tvChatTimestamp = itemView.findViewById(R.id.tvChatTimestamp);
             ivChatImage = itemView.findViewById(R.id.ivChatImage);
