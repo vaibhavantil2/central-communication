@@ -13,6 +13,7 @@ public class Constants {
     TYPING_STATUS ="typing_status",
     TIMESTAMP = "timestamp",
     WHATSAPP_CHAT_MESSAGE_ID = "whatsapp_id",
+    WHATSAPP_CHAT_TYPE = "chat_type",
     STATUS_SENDER_ID="sender_id",
     STATUS_IMAGE = "image",
     STATUS_CONTENT="status_content",
