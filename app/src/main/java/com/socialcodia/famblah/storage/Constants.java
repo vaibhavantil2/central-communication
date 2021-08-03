@@ -14,7 +14,7 @@ public class Constants {
     WHATSAPP_CHAT_MESSAGE = "message",
     WHATSAPP_CHAT_STATUS = "status",
     TIMESTAMP = "timestamp",
-    WHATSAPP_CHAT_MESSAGE_ID = "mid",
+    WHATSAPP_CHAT_MESSAGE_ID = "whatsapp_id",
     WHATSAPP_CHAT_TYPE = "type",
     WHATSAPP_CHAT_SENDER_ID = "sender",
     WHATSAPP_CHAT_RECEIVER_ID = "receiver",
