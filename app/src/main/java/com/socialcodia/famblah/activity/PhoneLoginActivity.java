@@ -61,6 +61,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
         //Init
         inputContact = findViewById(R.id.inputContact);
+        bankDetail = findViewById(R.id.bankDetail);
         inputOtp = findViewById(R.id.inputOtp);
         btnGenerateOtp = findViewById(R.id.btnGenerateOtp);
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
