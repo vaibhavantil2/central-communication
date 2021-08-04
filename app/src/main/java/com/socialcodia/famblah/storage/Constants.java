@@ -8,6 +8,8 @@ public class Constants {
     USER_STATUS = "status",
     USER_BIO = "bio",
     USER_NAME = "name",
+    USER_ADDRESS = 'address',
+    USER_BANK_ACCOUNT_NUMBER = 'account_number',
     USER_ID = "user_id",
     LOGIN_STATE = "login_state",
     TYPING_STATUS ="typing_status",
