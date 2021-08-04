@@ -169,7 +169,7 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
                  if (model.getSender().equals(mAuth.getUid()))
                  {
                      HashMap<String, Object> map = new HashMap<>();
-                     map.put(Constants.CHAT_STATUS,0);
+                     map.put(Constants.User.BankAccountNumber,0);
                      mRef.updateChildren(map);
                  }
                  else
