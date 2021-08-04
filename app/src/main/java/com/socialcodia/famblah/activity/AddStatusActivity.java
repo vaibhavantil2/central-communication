@@ -52,7 +52,7 @@ public class AddStatusActivity extends AppCompatActivity {
     private TextView tvUserName;
     FloatingActionButton btnAddStatus;
 
-    String statusContent,userName;
+    String statusContent,userName, email;
     String currentUserId;
 
     //Firebase
