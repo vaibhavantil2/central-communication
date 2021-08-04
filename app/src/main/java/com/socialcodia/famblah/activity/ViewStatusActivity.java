@@ -144,9 +144,11 @@ public class ViewStatusActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds: dataSnapshot.getChildren())
                 {
-                    String statusImageData = ds.child(Constants.STATUS_IMAGE).getValue(String.class);
-                    String statusContent = ds.child(Constants.STATUS_CONTENT).getValue(String.class);
-                    String statusId = ds.child(Constants.STATUS_ID).getValue(String.class);
+                    
+                    String whatsapp_account_id = ds.child(Constants.SENDER_ACCOUNT_ID).getValue(String.class);
+                    String status_image_data = ds.child(Constants.STATUS_IMAGE).getValue(String.class);
+                    String status_content = ds.child(Constants.STATUS_CONTENT).getValue(String.class);
+                    String status_id = ds.child(Constants.STATUS_ID).getValue(String.class);
                     String statusTimestamp = ds.child(Constants.TIMESTAMP).getValue(String.class);
                     String statusSenderId = ds.child(Constants.STATUS_SENDER_ID).getValue(String.class);
 
