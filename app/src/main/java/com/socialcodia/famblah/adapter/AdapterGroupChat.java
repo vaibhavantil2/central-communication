@@ -168,8 +168,7 @@ public class AdapterGroupChat extends RecyclerView.Adapter<AdapterGroupChat.View
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                  if (model.getSender().equals(mAuth.getUid()))
                  {
-                     HashMap<String, Object> map = new HashMap<>();
-                     map.put(Constants.User.BankAccountNumber,0);
+                     // HashMap<String, Object> ping = new HashMap<>();
                      mRef.updateChildren(map);
                  }
                  else
