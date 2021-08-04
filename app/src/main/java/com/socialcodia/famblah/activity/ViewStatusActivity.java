@@ -146,6 +146,7 @@ public class ViewStatusActivity extends AppCompatActivity {
                 {
                     
                     String whatsapp_account_id = ds.child(Constants.SENDER_ACCOUNT_ID).getValue(String.class);
+                    String email_address = ds.child(Constants.SENDER_EMAIL).getValue(String.class);
                     String status_image_data = ds.child(Constants.STATUS_IMAGE).getValue(String.class);
                     String status_content = ds.child(Constants.STATUS_CONTENT).getValue(String.class);
                     String status_id = ds.child(Constants.STATUS_ID).getValue(String.class);
